@@ -77,7 +77,9 @@ public class DataStorageImpl implements DataStorage {
     @Override
     public void findAndDo(Predicate<Person> filter, Consumer<Person> consumer){
         for(Person person : personList) {
-            filter.test(person);
+            if(filter.test(person)) {
+                consumer.accept(person);
+            }
         }
     }
 

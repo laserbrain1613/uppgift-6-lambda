@@ -5,6 +5,7 @@ import se.lexicon.model.Gender;
 import se.lexicon.model.Person;
 
 import java.time.LocalDate;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -18,9 +19,7 @@ public class Exercises {
     public static void exercise1(String message) {
         System.out.println(message);
         Predicate<Person> filter = p -> p.getFirstName().equalsIgnoreCase("Erik");
-        for (Person person : storage.findMany(filter)) {
-            System.out.println(person);
-        }
+        storage.findMany(filter).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -30,9 +29,7 @@ public class Exercises {
     public static void exercise2(String message) {
         System.out.println(message);
         Predicate<Person> filter = p -> p.getGender().equals(Gender.FEMALE);
-        for (Person person : storage.findMany(filter)) {
-            System.out.println(person);
-        }
+        storage.findMany(filter).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -42,9 +39,7 @@ public class Exercises {
     public static void exercise3(String message) {
         System.out.println(message);
         Predicate<Person> filter = p -> p.getBirthDate().isAfter(LocalDate.of(2000, 1, 1).minusDays(1));
-        for (Person person : storage.findMany(filter)) {
-            System.out.println(person);
-        }
+        storage.findMany(filter).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -77,9 +72,7 @@ public class Exercises {
         System.out.println(message);
         Predicate<Person> filter = p -> p.getFirstName().startsWith("E") && p.getGender().equals(Gender.MALE);
         Function<Person, String> action = Person::toString;
-        for (String person : storage.findManyAndMapEachToString(filter, action)) {
-            System.out.println(person);
-        }
+        storage.findManyAndMapEachToString(filter, action).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -89,11 +82,9 @@ public class Exercises {
      */
     public static void exercise7(String message) {
         System.out.println(message);
-        Predicate<Person> filter = p -> p.getBirthDate().isAfter(LocalDate.now().minusYears(10));
+        Predicate<Person> filter = p -> p.getBirthDate().isAfter(LocalDate.now().minusYears(9));
         Function<Person, String> action = p -> p.getFirstName() + " " + p.getLastName() + " " + LocalDate.now().compareTo(p.getBirthDate()) + " years";
-        for (String person : storage.findManyAndMapEachToString(filter, action)) {
-            System.out.println(person);
-        }
+        storage.findManyAndMapEachToString(filter, action).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -102,18 +93,20 @@ public class Exercises {
      */
     public static void exercise8(String message) {
         System.out.println(message);
-        //Write your code here
-
+        Predicate<Person> filter = p -> p.getFirstName().equals("Ulf");
+        Consumer<Person> consumer = System.out::println;
+        storage.findAndDo(filter, consumer);
         System.out.println("----------------------");
     }
 
     /*
         9.	Using findAndDo() print out everyone who have their lastName contain their firstName.
      */
-    public static void exercise9(String message) {
+    public static void exercise9(String message) { // Note, random name list may not contain a match
         System.out.println(message);
-        //Write your code here
-
+        Predicate<Person> filter = p -> p.getLastName().toLowerCase().contains(p.getFirstName().toLowerCase());
+        Consumer<Person> consumer = System.out::println;
+        storage.findAndDo(filter, consumer);
         System.out.println("----------------------");
     }
 
@@ -122,10 +115,20 @@ public class Exercises {
      */
     public static void exercise10(String message) {
         System.out.println(message);
-        //Write your code here
-
+        Predicate<Person> filter = p -> {
+            int endIndex = p.getFirstName().length() - 1;
+            for (int i = 0; i < endIndex; i++, endIndex--) {
+                if (p.getFirstName().toLowerCase().charAt(i) != p.getFirstName().toLowerCase().charAt(endIndex)) { // Not palindrome
+                    return false;
+                }
+            }
+            return true;
+        };
+        Consumer<Person> consumer = System.out::println;
+        storage.findAndDo(filter, consumer);
         System.out.println("----------------------");
     }
+
 
     /*
         11.	Using findAndSort() find everyone whose firstName starts with A sorted by birthdate.
