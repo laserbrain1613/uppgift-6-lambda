@@ -19,8 +19,7 @@ public class Exercises {
     */
     public static void exercise1(String message) {
         System.out.println(message);
-        Predicate<Person> filter = p -> p.getFirstName().equalsIgnoreCase("Erik");
-        storage.findMany(filter).forEach(System.out::println);
+        storage.findMany(p -> p.getFirstName().equalsIgnoreCase("Erik")).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -29,8 +28,7 @@ public class Exercises {
      */
     public static void exercise2(String message) {
         System.out.println(message);
-        Predicate<Person> filter = p -> p.getGender().equals(Gender.FEMALE);
-        storage.findMany(filter).forEach(System.out::println);
+        storage.findMany(p -> p.getGender().equals(Gender.FEMALE)).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -39,8 +37,7 @@ public class Exercises {
      */
     public static void exercise3(String message) {
         System.out.println(message);
-        Predicate<Person> filter = p -> p.getBirthDate().isAfter(LocalDate.of(2000, 1, 1).minusDays(1));
-        storage.findMany(filter).forEach(System.out::println);
+        storage.findMany(p -> p.getBirthDate().isAfter(LocalDate.of(2000, 1, 1).minusDays(1))).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -49,8 +46,7 @@ public class Exercises {
      */
     public static void exercise4(String message) {
         System.out.println(message);
-        Predicate<Person> filter = p -> p.getId() == 123;
-        System.out.println(storage.findOne(filter));
+        System.out.println(storage.findOne(p -> p.getId() == 123));
         System.out.println("----------------------");
     }
 
@@ -84,8 +80,7 @@ public class Exercises {
     public static void exercise7(String message) {
         System.out.println(message);
         Predicate<Person> filter = p -> p.getBirthDate().isAfter(LocalDate.now().minusYears(9));
-        Function<Person, String> action = p ->
-                p.getFirstName() + " " + p.getLastName() + " " + LocalDate.now().compareTo(p.getBirthDate()) + " years";
+        Function<Person, String> action = p -> p.getFirstName() + " " + p.getLastName() + " " + LocalDate.now().compareTo(p.getBirthDate()) + " years";
         storage.findManyAndMapEachToString(filter, action).forEach(System.out::println);
         System.out.println("----------------------");
     }
