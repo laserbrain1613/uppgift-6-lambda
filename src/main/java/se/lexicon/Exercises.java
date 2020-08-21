@@ -80,8 +80,7 @@ public class Exercises {
     public static void exercise7(String message) {
         System.out.println(message);
         Predicate<Person> filter = p -> p.getBirthDate().isAfter(LocalDate.now().minusYears(9));
-        Function<Person, String> action = p ->
-                p.getFirstName() + " " + p.getLastName() + " " + LocalDate.now().compareTo(p.getBirthDate()) + " years";
+        Function<Person, String> action = p -> p.getFirstName() + " " + p.getLastName() + " " + LocalDate.now().compareTo(p.getBirthDate()) + " years";
         storage.findManyAndMapEachToString(filter, action).forEach(System.out::println);
         System.out.println("----------------------");
     }
