@@ -5,6 +5,7 @@ import se.lexicon.model.Gender;
 import se.lexicon.model.Person;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -83,7 +84,8 @@ public class Exercises {
     public static void exercise7(String message) {
         System.out.println(message);
         Predicate<Person> filter = p -> p.getBirthDate().isAfter(LocalDate.now().minusYears(9));
-        Function<Person, String> action = p -> p.getFirstName() + " " + p.getLastName() + " " + LocalDate.now().compareTo(p.getBirthDate()) + " years";
+        Function<Person, String> action = p ->
+                p.getFirstName() + " " + p.getLastName() + " " + LocalDate.now().compareTo(p.getBirthDate()) + " years";
         storage.findManyAndMapEachToString(filter, action).forEach(System.out::println);
         System.out.println("----------------------");
     }
@@ -124,19 +126,19 @@ public class Exercises {
             }
             return true;
         };
-        Consumer<Person> consumer = System.out::println;
+        Consumer<Person> consumer = c -> System.out.println(c.getFirstName() + " " + c.getLastName());
         storage.findAndDo(filter, consumer);
         System.out.println("----------------------");
     }
-
 
     /*
         11.	Using findAndSort() find everyone whose firstName starts with A sorted by birthdate.
      */
     public static void exercise11(String message) {
         System.out.println(message);
-        //Write your code here
-
+        Predicate<Person> filter = p -> p.getFirstName().startsWith("A");
+        Comparator<Person> comparator = Comparator.comparing(Person::getBirthDate);
+        storage.findAndSort(filter, comparator).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -145,8 +147,9 @@ public class Exercises {
      */
     public static void exercise12(String message) {
         System.out.println(message);
-        //Write your code here
-
+        Predicate<Person> filter = p -> p.getBirthDate().isBefore(LocalDate.ofYearDay(1950, 1));
+        Comparator<Person> comparator = Comparator.comparing(Person::getBirthDate);
+        storage.findAndSort(filter, comparator.reversed()).forEach(System.out::println);
         System.out.println("----------------------");
     }
 
@@ -155,27 +158,13 @@ public class Exercises {
      */
     public static void exercise13(String message) {
         System.out.println(message);
-        //Write your code here
-
+        Comparator<Person> comparator = Comparator
+                .comparing(Person::getLastName)
+                .thenComparing(Person::getFirstName)
+                .thenComparing(Person::getBirthDate);
+        storage.findAndSort(comparator).forEach(System.out::println);
         System.out.println("----------------------");
     }
-
-
-//    public static void process(Person person) {
-//        System.out.println(person);
-//    }
-//
-//    public static void process(List<Person> display) {
-//        for (Person person : display) {
-//            System.out.println(person);
-//        }
-//    }
-
-//    public static void process(List<String> display) {
-//        for (String person : display) {
-//            System.out.println(person);
-//        }
-//    }
 
 
 }
